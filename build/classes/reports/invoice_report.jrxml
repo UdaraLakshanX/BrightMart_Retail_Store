@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" 
+              name="invoice_receipt" 
+              pageWidth="226" 
+              pageHeight="440" 
+              columnWidth="206" 
+              leftMargin="10" 
+              rightMargin="10" 
+              topMargin="12" 
+              bottomMargin="12" 
+              isFloatColumnFooter="true"
+              uuid="c7e145b2-32a1-4ef7-90c1-90cbda761b01">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="brightmart_adapter"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<parameter name="P_INVOICE_NO" class="java.lang.String">
+		<defaultValueExpression><![CDATA["INV-10045"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="P_CASHIER" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Admin"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="P_PAYMENT_MODE" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Cash"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="P_CASH_PAID" class="java.lang.Double">
+		<defaultValueExpression><![CDATA[6500.00]]></defaultValueExpression>
+	</parameter>
+	<parameter name="P_BALANCE" class="java.lang.Double">
+		<defaultValueExpression><![CDATA[500.00]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT 
+    i.invoice_no,
+    i.invoice_date_time,
+    i.total_amount,
+    ii.item_code,
+    COALESCE(p.description, ii.item_code) AS description,
+    ii.sold_qty,
+    ii.selling_price,
+    (ii.sold_qty * ii.selling_price) AS line_total
+FROM invoice i
+INNER JOIN invoice_items ii ON i.invoice_no = ii.invoice_no
+LEFT JOIN product p ON ii.item_code = p.item_code
+WHERE i.invoice_no = $P{P_INVOICE_NO}
+ORDER BY ii.item_code ASC]]>
+	</queryString>
+	<field name="invoice_no" class="java.lang.String"/>
+	<field name="invoice_date_time" class="java.sql.Timestamp"/>
+	<field name="total_amount" class="java.math.BigDecimal"/>
+	<field name="item_code" class="java.lang.String"/>
+	<field name="description" class="java.lang.String"/>
+	<field name="sold_qty" class="java.lang.Integer"/>
+	<field name="selling_price" class="java.math.BigDecimal"/>
+	<field name="line_total" class="java.math.BigDecimal"/>
+	<variable name="CALCULATED_TOTAL" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{line_total}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="102" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="206" height="18" forecolor="#0F2C59" uuid="2a53d10c-354d-4513-bd9e-213cb5bf54a1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BRIGHTMART RETAIL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="18" width="206" height="12" forecolor="#000000" uuid="7cf445da-9da8-4ff6-9bb2-bfb7c25ef812"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[No. 35, Gampola, Kandy.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="30" width="206" height="12" forecolor="#000000" uuid="6245389a-05a8-4ce6-a794-0df524b0e513"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[Tel: 011-2345678]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="44" width="206" height="13" forecolor="#000000" uuid="5fa77610-8b11-47cb-b461-9c60e05e5520"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INVOICE]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="60" width="206" height="13" forecolor="#000000" uuid="9348d61f-d741-4c6e-8566-3d2bfae0cf55"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Invoice No: " + ($F{invoice_no} != null ? $F{invoice_no} : $P{P_INVOICE_NO})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="73" width="206" height="13" forecolor="#000000" uuid="3d2cb045-8120-4ee8-9cb5-ef5610bcdae3"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Date: " + ($F{invoice_date_time} != null ? new java.text.SimpleDateFormat("dd-MM-yyyy HH:mm").format($F{invoice_date_time}) : new java.text.SimpleDateFormat("dd-MM-yyyy HH:mm").format(new java.util.Date()))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="86" width="206" height="13" forecolor="#000000" uuid="0a45be20-1a4c-47ea-83ef-d2c608f65e23"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Cashier: " + ($P{P_CASHIER} != null ? $P{P_CASHIER} : "Admin")]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="100" width="206" height="1" uuid="88a44b1c-7cb1-4cb5-8299-d41cfa257d60"/>
+				<graphicElement>
+					<pen lineWidth="0.75" lineStyle="Dashed" lineColor="#000000"/>
+				</graphicElement>
+			</line>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="18" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="76" height="14" forecolor="#000000" uuid="d1e024b8-f076-47eb-ba66-9ab5df4f8011"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Item Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="76" y="0" width="22" height="14" forecolor="#000000" uuid="7cf4466b-4e1b-4cf7-ae36-efd37c95aef4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Qty]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="98" y="0" width="54" height="14" forecolor="#000000" uuid="6a71bbd3-6052-47ef-b6b8-654cfef8891a"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+					<paragraph rightIndent="2"/>
+				</textElement>
+				<text><![CDATA[Price]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="152" y="0" width="54" height="14" forecolor="#000000" uuid="a659725f-2981-4ba2-8ef7-033c5e7b51e6"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="15" width="206" height="1" uuid="88a44b1c-7cb1-4cb5-8299-d41cfa257d61"/>
+				<graphicElement>
+					<pen lineWidth="0.75" lineStyle="Dashed" lineColor="#000000"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField textAdjust="StretchHeight">
+				<reportElement x="0" y="0" width="76" height="14" forecolor="#000000" uuid="a65f9730-109d-4395-885f-a7b213cbe96b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="7.5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="76" y="0" width="22" height="14" forecolor="#000000" uuid="42b781a9-3990-449e-b9bb-ef7f2305dae9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="7.5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sold_qty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="98" y="0" width="54" height="14" forecolor="#000000" uuid="c2f019b7-15ef-4eb9-a3b0-2b992f896b05"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="7.5"/>
+					<paragraph rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA["LKR " + new java.text.DecimalFormat("#,##0.00").format($F{selling_price})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="152" y="0" width="54" height="14" forecolor="#000000" uuid="2a3f7899-07bc-4017-be08-c891ae5164bc"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="7.5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["LKR " + new java.text.DecimalFormat("#,##0.00").format($F{line_total})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="94" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="2" width="206" height="1" uuid="88a44b1c-7cb1-4cb5-8299-d41cfa257d62"/>
+				<graphicElement>
+					<pen lineWidth="0.75" lineStyle="Dashed" lineColor="#000000"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="0" y="6" width="90" height="14" forecolor="#000000" uuid="a65099cb-1a75-4702-8f6a-4d74a9eb1580"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sub-Total]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="90" y="6" width="116" height="14" forecolor="#000000" uuid="1695cf64-b0a6-44ec-b442-fca1923fae88"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["LKR " + new java.text.DecimalFormat("#,##0.00").format($F{total_amount} != null ? $F{total_amount} : ($V{CALCULATED_TOTAL} != null ? $V{CALCULATED_TOTAL} : java.math.BigDecimal.ZERO))]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="20" width="90" height="14" forecolor="#000000" uuid="2a1b1574-e842-45e3-b6d4-897ea4b5cb34"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[Cash]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="90" y="20" width="116" height="14" forecolor="#000000" uuid="55990ea8-d621-4bce-b690-3cb82a39a0ef"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["LKR " + new java.text.DecimalFormat("#,##0.00").format($P{P_CASH_PAID} != null && $P{P_CASH_PAID} > 0 ? $P{P_CASH_PAID} : ($F{total_amount} != null ? $F{total_amount}.doubleValue() : ($V{CALCULATED_TOTAL} != null ? $V{CALCULATED_TOTAL}.doubleValue() : 0.0)))]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="34" width="90" height="14" forecolor="#000000" uuid="6a245598-a83a-4db8-8316-f6ab098b1ec4"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Balance]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="90" y="34" width="116" height="14" forecolor="#000000" uuid="d61329c0-9941-4c12-880c-c76251c86a34"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["LKR " + new java.text.DecimalFormat("#,##0.00").format($P{P_BALANCE} != null ? $P{P_BALANCE} : 0.0)]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="56" width="206" height="14" forecolor="#000000" uuid="2cf4ef27-9952-47df-9842-9f33ae149755"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[*** THANK YOU COME AGAIN! ***]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="74" width="206" height="14" forecolor="#000000" uuid="e3bb652b-fb62-43ce-9cb6-735952e46b9a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[Developed By Udara Lakshan]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>
